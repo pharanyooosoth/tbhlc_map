@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>แผนที่กำลังคน TBHLC 1–13</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@500;600;700&family=Sarabun:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  /* แนวทาง: เอกสารวิชาการสำหรับที่ประชุม — แผนที่เป็นศูนย์กลาง ตารางและข้อเสนอตามมา */
+  --paper: #f7f8f6;
+  --surface: #ffffff;
+  --ink: #17222c;
+  --muted: #5a6670;
+  --line: #c9d0d4;
+  --band: #eef1ef;
+  --accent: #0f6b74;
+  --accent-soft: #d8ecec;
+  --clin: #2a5d8f;
+  --clin-soft: #e1eaf3;
+  --thai: #f1ece2;
+  --warn: #9a5a00;
+  --warn-soft: #fbefd9;
+  --series-1: #2a78d6;
+  --series-2: #eb6834;
+  --display: "IBM Plex Sans Thai", "Sarabun", "Noto Sans Thai", sans-serif;
+  --body: "Sarabun", "Noto Sans Thai", "Leelawadee UI", sans-serif;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #141a1f; --surface: #1b2228; --ink: #e8ecee; --muted: #a3afb7;
+    --line: #3a464f; --band: #1f272d; --accent: #4fb3bb; --accent-soft: #173a3e;
+    --clin: #7fb0e0; --clin-soft: #1d2e40; --thai: #2b2820; --warn: #e6a64a; --warn-soft: #3a2c15;
+    --series-1: #3987e5; --series-2: #d95926;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #141a1f; --surface: #1b2228; --ink: #e8ecee; --muted: #a3afb7;
+  --line: #3a464f; --band: #1f272d; --accent: #4fb3bb; --accent-soft: #173a3e;
+  --clin: #7fb0e0; --clin-soft: #1d2e40; --thai: #2b2820; --warn: #e6a64a; --warn-soft: #3a2c15;
+  --series-1: #3987e5; --series-2: #d95926;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body { background: var(--paper); color: var(--ink); font-family: var(--body); font-size: 16.5px; line-height: 1.65; }
+main { max-width: 1180px; margin: 0 auto; padding: 32px 20px 64px; display: grid; gap: 40px; }
+h1, h2, h3 { font-family: var(--display); text-wrap: balance; line-height: 1.3; margin: 0; }
+h1 { font-size: 30px; font-weight: 700; }
+h2 { font-size: 22px; font-weight: 600; margin-bottom: 12px; }
+h3 { font-size: 17px; font-weight: 600; }
+p { margin: 0; max-width: 72ch; }
+.eyebrow { font-size: 13.5px; color: var(--muted); letter-spacing: .02em; }
+header { display: grid; gap: 10px; }
+.lede { color: var(--muted); }
+.tag { display: inline-block; font-size: 12px; padding: 1px 8px; border-radius: 999px; border: 1px solid var(--line); color: var(--muted); vertical-align: 2px; white-space: nowrap; }
+.tag.doc { border-color: var(--clin); color: var(--clin); }
+.tag.ana { border-color: var(--accent); color: var(--accent); }
+.tag.gap { border-color: var(--warn); color: var(--warn); }
+.keys { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 14px; }
+.key { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 16px 18px; display: grid; gap: 6px; align-content: start; }
+.key .n { font-family: var(--display); font-weight: 700; font-size: 26px; color: var(--accent); font-variant-numeric: tabular-nums; line-height: 1.1; }
+.key p { font-size: 15.5px; }
+figure { margin: 0; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 18px; display: grid; gap: 12px; }
+.scroll { overflow-x: auto; }
+.map { width: 100%; min-width: 980px; height: auto; display: block; color: var(--ink); font-family: var(--body); }
+figcaption { font-size: 14.5px; color: var(--muted); max-width: none; }
+.legend { display: flex; flex-wrap: wrap; gap: 8px 18px; font-size: 13.5px; color: var(--muted); }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.sw { width: 18px; height: 12px; border-radius: 3px; border: 1.5px solid var(--line); display: inline-block; }
+/* svg roles */
+.band-a { fill: var(--band); }
+.band-b { fill: transparent; }
+.colpanel { fill: var(--thai); stroke: var(--line); }
+.sep { stroke: var(--line); stroke-dasharray: 4 4; }
+.border { stroke: var(--warn); stroke-width: 2; stroke-dasharray: 8 5; }
+.nd rect { fill: var(--surface); stroke: var(--line); stroke-width: 1.5; }
+.nd.clin rect { fill: var(--clin-soft); stroke: var(--clin); }
+.nd.lead rect { fill: var(--accent-soft); stroke: var(--accent); stroke-width: 2.5; }
+.nd.prior rect { fill: var(--clin-soft); stroke: var(--clin); stroke-dasharray: 6 4; stroke-width: 2; }
+.nd.thai rect { fill: var(--surface); stroke: var(--muted); }
+.nd.flag rect { stroke: var(--warn); stroke-width: 2; }
+.t1 { font-size: 13.5px; font-weight: 600; fill: var(--ink); }
+.t2 { font-size: 12px; fill: var(--ink); font-variant-numeric: tabular-nums; }
+.t3 { font-size: 11.5px; fill: var(--muted); }
+.th { font-family: var(--display); font-size: 14.5px; font-weight: 600; fill: var(--ink); }
+.ts { font-size: 11.5px; fill: var(--muted); }
+.bl1 { font-family: var(--display); font-size: 13px; font-weight: 600; fill: var(--ink); }
+.bl2 { font-size: 11.5px; fill: var(--muted); }
+.edge { stroke: var(--ink); stroke-width: 1.5; fill: none; }
+.edge.lead { stroke: var(--accent); stroke-width: 2; }
+.el { font-size: 11.5px; fill: var(--ink); }
+.el.lead { fill: var(--accent); font-weight: 600; }
+.warnt { font-size: 11.5px; fill: var(--warn); font-weight: 600; }
+.pill rect { fill: var(--surface); stroke: var(--line); }
+.pill.post rect { stroke-dasharray: 4 3; fill: transparent; }
+.pill text { font-size: 12px; fill: var(--ink); }
+.pill.post text { fill: var(--muted); }
+/* table */
+.tablewrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; min-width: 900px; font-size: 15px; }
+th, td { text-align: left; vertical-align: top; padding: 12px 14px; border-bottom: 1px solid var(--line); }
+th { font-family: var(--display); font-weight: 600; font-size: 14px; background: var(--band); }
+tr:last-child td { border-bottom: 0; }
+td.num { font-variant-numeric: tabular-nums; white-space: nowrap; }
+.tier { display: inline-block; font-family: var(--display); font-weight: 700; width: 26px; height: 26px; line-height: 26px; text-align: center; border-radius: 6px; background: var(--band); border: 1px solid var(--line); }
+tr.lead td { background: color-mix(in srgb, var(--accent-soft) 55%, transparent); }
+tr.lead .tier { background: var(--accent); color: var(--surface); border-color: var(--accent); }
+/* bar chart */
+.bars { display: grid; gap: 6px; }
+.row { display: grid; grid-template-columns: 230px 1fr 150px; gap: 12px; align-items: center; font-size: 14.5px; padding: 3px 4px; border-radius: 6px; }
+.row:hover, .row:focus-within { background: var(--band); }
+.row .lbl { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.track { position: relative; height: 18px; display: flex; gap: 2px; }
+.seg { height: 100%; }
+.seg.t { background: var(--series-2); border-radius: 4px 0 0 4px; }
+.seg.p { background: var(--series-1); border-radius: 0 4px 4px 0; }
+.seg.u { background: repeating-linear-gradient(45deg, var(--line) 0 4px, transparent 4px 8px); border-radius: 4px; border: 1px solid var(--line); }
+.row .val { font-variant-numeric: tabular-nums; color: var(--muted); font-size: 14px; }
+.row .val b { color: var(--ink); font-weight: 600; }
+.row .val .low { color: var(--warn); font-weight: 600; }
+@media (max-width: 640px) { .row { grid-template-columns: 1fr; gap: 2px; } }
+/* findings */
+.cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 16px; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 18px 20px; display: grid; gap: 8px; align-content: start; }
+.card.w { border-left: 4px solid var(--warn); }
+.card.a { border-left: 4px solid var(--accent); }
+.card p, .card li { font-size: 15.5px; }
+ol, ul { margin: 0; padding-left: 22px; display: grid; gap: 8px; }
+.prio { display: grid; gap: 18px; }
+.prio h3 { display: flex; gap: 10px; align-items: baseline; }
+.prio .lvl { font-size: 12.5px; font-weight: 600; padding: 2px 10px; border-radius: 999px; }
+.lvl.must { background: var(--warn-soft); color: var(--warn); }
+.lvl.should { background: var(--accent-soft); color: var(--accent); }
+.lvl.long { background: var(--band); color: var(--muted); }
+.who { color: var(--muted); font-size: 14.5px; }
+.note { font-size: 14.5px; color: var(--muted); border-top: 1px solid var(--line); padding-top: 14px; display: grid; gap: 6px; }
+a { color: var(--accent); }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+</style>
+</head>
+<body>
+<main>
+
+<header>
+  <div class="eyebrow">TBHAP · ศูนย์เรียนรู้ฯ ชายแดน รพ.แม่สอด · เอกสารประกอบการวิพากษ์ 12–13 พ.ย. 2569 · ภาควิชาเวชศาสตร์ชุมชน รามาธิบดี (ฉบับร่างของผู้วิพากษ์)</div>
+  <h1>แผนที่กำลังคน TBHLC 1–13 ในระบบสุขภาพศูนย์พักพิงชั่วคราวชายแดน</h1>
+  <p class="lede">ภาพรวมว่าผู้ผ่านแต่ละหลักสูตรจะไปยืนตรงไหนในระบบบริการ ใครกำกับใคร ข้อมูลและผู้ป่วยไหลอย่างไร และจำนวนชั่วโมงเรียนกำหนดลำดับชั้นและโอกาสเป็นผู้นำพัฒนาระบบอย่างไร</p>
+  <p class="lede" style="font-size:14.5px">ป้ายกำกับ: <span class="tag doc">เอกสาร</span> ข้อความจากเอกสารหลักสูตร · <span class="tag ana">วิเคราะห์</span> การตีความของผู้วิพากษ์ · <span class="tag gap">ข้อมูลที่ขาด</span> ควรถามผู้รับผิดชอบหลักสูตร</p>
+</header>
+
+<section>
+  <h2>ข้อค้นพบหลัก</h2>
+  <div class="keys">
+    <div class="key">
+      <div class="n">85%</div>
+      <p><span class="tag doc">เอกสาร</span> ชั่วโมงเรียนรวม 13 หลักสูตร = 2,857 ชม. โดย 3 หลักสูตร (MPHO 1,245 · Medic 615 · Practical Nurse 575) คิดเป็น 2,435 ชม. อีก 10 หลักสูตรยาว 18–70 ชม.</p>
+    </div>
+    <div class="key">
+      <div class="n">2 ยอด</div>
+      <p><span class="tag ana">วิเคราะห์</span> ลำดับชั้นมีสองสาย: สายคลินิกมีแพทย์เป็นยอด (ด้วยวุฒิเดิม แม้เรียนเพียง 35 ชม.) และสายสาธารณสุขชุมชนมี MPHO เป็นยอด (1,245 ชม. ≈ 1 ปีการศึกษา)</p>
+    </div>
+    <div class="key">
+      <div class="n">0 แพทย์</div>
+      <p><span class="tag doc">เอกสาร</span> อุ้มเปี้ยมและนุโพไม่มีแพทย์ประจำ แพทย์ 4 คนอยู่ที่แม่หละทั้งหมด <span class="tag ana">วิเคราะห์</span> ใน 2 ใน 3 แคมป์ Medic (615 ชม.) จึงเป็นระดับคลินิกสูงสุดโดยพฤตินัย</p>
+    </div>
+    <div class="key">
+      <div class="n">1 สาย</div>
+      <p><span class="tag ana">วิเคราะห์</span> MPHO เป็นหลักสูตรเดียวที่ยาวพอและเขียนปรัชญาไว้ว่าให้ "เป็นผู้นำการพัฒนาสุขภาพ" สายคลินิกยังไม่มีหลักสูตรผู้นำหรือผู้นิเทศ และฝั่ง รพ.แม่ข่ายยังไม่มีหลักสูตรครูพี่เลี้ยง</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>แผนที่: ใครทำงานตรงไหน ใครกำกับใคร</h2>
+  <figure>
+    <div class="scroll">
+<svg class="map" viewBox="0 0 1240 800" role="img" aria-label="แผนที่กำลังคน 13 หลักสูตร แกนนอนคือระดับของระบบบริการจากครัวเรือนถึงระบบสาธารณสุขไทย แกนตั้งคือความลึกของการฝึกตามจำนวนชั่วโมง แพทย์อยู่บนสุดด้วยวุฒิเดิม MPHO อยู่ระดับรองในฝั่งชุมชนและเชื่อมรายงานไป สสอ. และ JICC Medic และผู้ช่วยพยาบาลเป็นกำลังหลักในหน่วยบริการ หลักสูตรสั้นอยู่ด้านล่าง">
+  <defs>
+    <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="currentColor"/></marker>
+  </defs>
+
+  <!-- band stripes -->
+  <rect class="band-a" x="0" y="64" width="1005" height="86"/>
+  <rect class="band-a" x="0" y="260" width="1005" height="120"/>
+  <rect class="band-a" x="0" y="520" width="1005" height="130"/>
+
+  <!-- band labels -->
+  <text class="bl1" x="14" y="98">วุฒิวิชาชีพเดิม</text>
+  <text class="bl2" x="14" y="116">+ หลักสูตรเชื่อมต่อ</text>
+  <text class="bl2" x="14" y="132">(bridging)</text>
+
+  <text class="bl1" x="14" y="196">≈ 1 ปีการศึกษา</text>
+  <text class="bl2" x="14" y="214">≥ 1,000 ชม.</text>
+  <text class="bl2" x="14" y="230">≈ 40 สัปดาห์*</text>
+
+  <text class="bl1" x="14" y="312">ระดับภาคเรียน</text>
+  <text class="bl2" x="14" y="330">500–700 ชม.</text>
+  <text class="bl2" x="14" y="346">≈ 19–21 สัปดาห์*</text>
+
+  <text class="bl1" x="14" y="436">หลักสูตรสั้น</text>
+  <text class="bl2" x="14" y="454">46–70 ชม.</text>
+  <text class="bl2" x="14" y="470">≈ 1.5–2.5 สัปดาห์*</text>
+
+  <text class="bl1" x="14" y="572">หลักสูตรสั้นมาก</text>
+  <text class="bl2" x="14" y="590">≤ 35 ชม.</text>
+  <text class="bl2" x="14" y="606">≤ 1 สัปดาห์*</text>
+
+  <!-- column headers -->
+  <text class="th" x="265" y="22" text-anchor="middle">ครัวเรือน</text>
+  <text class="ts" x="265" y="40" text-anchor="middle">บ้าน · ครอบครัว · ผู้มีภาวะพึ่งพิง</text>
+  <text class="th" x="470" y="22" text-anchor="middle">ชุมชนในศูนย์พักพิง</text>
+  <text class="ts" x="470" y="40" text-anchor="middle">โซน/เซกชัน · WASH · เฝ้าระวัง</text>
+  <text class="th" x="790" y="22" text-anchor="middle">หน่วยบริการในศูนย์พักพิง</text>
+  <text class="ts" x="790" y="40" text-anchor="middle">OPD · IPD · ER · ANC/คลอด · Lab · ยา · เวชระเบียน</text>
+  <text class="ts" x="790" y="56" text-anchor="middle">แม่หละ 32,963 · อุ้มเปี้ยม 8,125 · นุโพ 7,538 คน · จนท. 320 คน</text>
+  <text class="th" x="1125" y="22" text-anchor="middle">ระบบสาธารณสุขไทย</text>
+  <text class="ts" x="1125" y="40" text-anchor="middle">นอกศูนย์พักพิง</text>
+
+  <!-- separators -->
+  <line class="sep" x1="365" y1="60" x2="365" y2="650"/>
+  <line class="sep" x1="575" y1="60" x2="575" y2="650"/>
+  <line class="border" x1="1012" y1="60" x2="1012" y2="650"/>
+  <text class="warnt" x="1006" y="644" text-anchor="end">ขอบเขตศูนย์พักพิง</text>
+
+  <!-- Thai system panel -->
+  <rect class="colpanel" x="1022" y="64" width="208" height="586" rx="10"/>
+  <g class="nd thai">
+    <rect x="1032" y="72" width="188" height="98" rx="8"/>
+    <text class="t1" x="1044" y="94">รพ.แม่ข่ายรายแคมป์</text>
+    <text class="t3" x="1044" y="114">แม่หละ → รพ.ท่าสองยาง</text>
+    <text class="t3" x="1044" y="132">อุ้มเปี้ยม → รพ.พบพระ †</text>
+    <text class="t3" x="1044" y="150">นุโพ → รพ.อุ้มผาง</text>
+  </g>
+  <g class="nd thai">
+    <rect x="1032" y="180" width="188" height="58" rx="8"/>
+    <text class="t1" x="1044" y="203">สสอ. · สสจ.ตาก</text>
+    <text class="t3" x="1044" y="223">JICC ข้อมูลโรคข้ามแดน</text>
+  </g>
+  <g class="nd thai">
+    <rect x="1032" y="290" width="188" height="74" rx="8"/>
+    <text class="t1" x="1044" y="315">รพ.แม่สอด · ศรร.</text>
+    <text class="t3" x="1044" y="335">แหล่งฝึก · ครูพี่เลี้ยง</text>
+    <text class="t3" x="1044" y="353">ฝึก PN บนหอผู้ป่วย 1:8</text>
+  </g>
+  <g class="nd thai">
+    <rect x="1032" y="412" width="188" height="60" rx="8"/>
+    <text class="t1" x="1044" y="435">ระบบยา รพ.แม่ข่าย</text>
+    <text class="t3" x="1044" y="455">ปัจจุบันใช้คลังที่เหลือจาก IRC</text>
+  </g>
+  <g class="nd thai">
+    <rect x="1032" y="550" width="188" height="60" rx="8"/>
+    <text class="t1" x="1044" y="573">ระบบข้อมูลไทย</text>
+    <text class="t3" x="1044" y="593">Hospital OS · 43 แฟ้ม · MHDC</text>
+  </g>
+
+  <!-- Band A: doctor -->
+  <text class="warnt" x="590" y="88">อุ้มเปี้ยม · นุโพ</text>
+  <text class="warnt" x="590" y="105">ไม่มีแพทย์ประจำ:</text>
+  <text class="warnt" x="590" y="122">Medic consult</text>
+  <text class="warnt" x="590" y="139">รพ.แม่ข่ายโดยตรง</text>
+  <g class="nd prior">
+    <rect x="720" y="76" width="200" height="64" rx="8"/>
+    <text class="t1" x="732" y="97">แพทย์ข้ามชาติ</text>
+    <text class="t2" x="732" y="115">TBHLC 1 · 35 ชม.</text>
+    <text class="t3" x="732" y="132">4 คน · แม่หละเท่านั้น</text>
+  </g>
+
+  <!-- Band B: MPHO -->
+  <g class="nd lead">
+    <rect x="190" y="172" width="360" height="72" rx="8"/>
+    <text class="t1" x="204" y="195">Migrant Public Health Officer (MPHO)</text>
+    <text class="t2" x="204" y="214">TBHLC 4 · 1,245 ชม. · 38 หน่วยกิต · ปฏิบัติ 70%</text>
+    <text class="t3" x="204" y="233">ผู้นำสาธารณสุขชุมชน: เฝ้าระวัง · WASH · วัคซีน · MCH</text>
+  </g>
+
+  <!-- Band C: Medic, PN -->
+  <g class="nd clin">
+    <rect x="600" y="292" width="180" height="64" rx="8"/>
+    <text class="t1" x="612" y="313">Medic</text>
+    <text class="t2" x="612" y="331">TBHLC 2 · 615 ชม.</text>
+    <text class="t3" x="612" y="348">OPD · ER · หัตถการ · SOAP</text>
+  </g>
+  <g class="nd clin">
+    <rect x="812" y="292" width="180" height="64" rx="8"/>
+    <text class="t1" x="824" y="313">ผู้ช่วยพยาบาล (PN)</text>
+    <text class="t2" x="824" y="331">TBHLC 3 · 575 ชม.</text>
+    <text class="t3" x="824" y="348">หอผู้ป่วยใน · กิจวัตร</text>
+  </g>
+
+  <!-- Band D -->
+  <g class="nd">
+    <rect x="185" y="410" width="165" height="64" rx="8"/>
+    <text class="t1" x="197" y="431">Care Giver</text>
+    <text class="t2" x="197" y="449">TBHLC 9 · 70 ชม.</text>
+    <text class="t3" x="197" y="466">ผู้สูงอายุ · ADL · PTSD</text>
+  </g>
+  <g class="nd">
+    <rect x="390" y="410" width="165" height="64" rx="8"/>
+    <text class="t1" x="402" y="431">อสต.</text>
+    <text class="t2" x="402" y="449">TBHLC 8 · 46 ชม.</text>
+    <text class="t3" x="402" y="466">คัดกรอง · ชุดกระเป๋า อสต.</text>
+  </g>
+  <g class="nd">
+    <rect x="590" y="410" width="128" height="64" rx="8"/>
+    <text class="t1" x="601" y="431">นวดไทย</text>
+    <text class="t2" x="601" y="449">TBHLC 7 · 60 ชม.</text>
+    <text class="t3" x="601" y="466">ไม่ชัดว่าอยู่จุดใด</text>
+  </g>
+  <g class="nd clin flag">
+    <rect x="727" y="410" width="128" height="64" rx="8"/>
+    <text class="t1" x="738" y="431">Midwife</text>
+    <text class="t2" x="738" y="449">TBHLC 10 · 60 ชม.</text>
+    <text class="t3" x="738" y="466">ANC · คลอด · PPH</text>
+  </g>
+  <g class="nd flag">
+    <rect x="864" y="410" width="128" height="64" rx="8"/>
+    <text class="t1" x="875" y="431">ผู้ช่วยห้องยา</text>
+    <text class="t2" x="875" y="449">TBHLC 11 · 50 ชม.</text>
+    <text class="t3" x="875" y="466">ปฏิบัติ 12%</text>
+  </g>
+
+  <!-- Band E -->
+  <g class="nd">
+    <rect x="185" y="548" width="165" height="64" rx="8"/>
+    <text class="t1" x="197" y="569">แกนนำสุขภาพครอบครัว</text>
+    <text class="t2" x="197" y="587">TBHLC 12 · 24 ชม.</text>
+    <text class="t3" x="197" y="604">สื่อสาร · เฝ้าระวัง · ส่งต่อ</text>
+  </g>
+  <g class="nd flag">
+    <rect x="600" y="548" width="180" height="64" rx="8"/>
+    <text class="t1" x="612" y="569">จนท.ห้องปฏิบัติการ</text>
+    <text class="t2" x="612" y="587">TBHLC 5 · 18 ชม.</text>
+    <text class="t3" x="612" y="604">Rapid test · ปฏิบัติ 3 ชม.</text>
+  </g>
+  <g class="nd">
+    <rect x="812" y="548" width="180" height="64" rx="8"/>
+    <text class="t1" x="824" y="569">จนท.เวชระเบียน</text>
+    <text class="t2" x="824" y="587">TBHLC 6 · 24 ชม.</text>
+    <text class="t3" x="824" y="604">Hospital OS · PDPA</text>
+  </g>
+
+  <!-- edges -->
+  <g color="currentColor">
+    <!-- doctor <-> host hospital -->
+    <line class="edge" x1="922" y1="108" x2="1030" y2="108" marker-start="url(#ah)" marker-end="url(#ah)"/>
+    <text class="el" x="976" y="100" text-anchor="middle">Refer</text>
+    <text class="el" x="976" y="128" text-anchor="middle">back-refer</text>
+    <!-- medic -> doctor consult -->
+    <line class="edge" x1="760" y1="290" x2="760" y2="142" marker-end="url(#ah)"/>
+    <text class="el" x="768" y="272">Consult</text>
+    <!-- medic -> PN -->
+    <line class="edge" x1="782" y1="324" x2="810" y2="324" marker-end="url(#ah)"/>
+    <!-- Mae Sot training -> PN -->
+    <line class="edge" x1="1030" y1="324" x2="994" y2="324" marker-end="url(#ah)"/>
+    <!-- pharm <-> drug system -->
+    <line class="edge" x1="994" y1="442" x2="1030" y2="442" marker-start="url(#ah)" marker-end="url(#ah)"/>
+    <!-- MRO <-> data -->
+    <line class="edge" x1="994" y1="580" x2="1030" y2="580" marker-start="url(#ah)" marker-end="url(#ah)"/>
+    <!-- CG -> อสต. -->
+    <line class="edge" x1="352" y1="442" x2="388" y2="442" marker-end="url(#ah)"/>
+    <!-- FHL -> อสต. -->
+    <line class="edge" x1="350" y1="560" x2="428" y2="476" marker-end="url(#ah)"/>
+    <text class="el" x="392" y="540">แจ้งเหตุ · ส่งต่อ</text>
+    <!-- อสต. -> Medic -->
+    <line class="edge" x1="555" y1="420" x2="604" y2="358" marker-end="url(#ah)"/>
+    <text class="el" x="566" y="396" text-anchor="end">ส่งต่อผู้ป่วย</text>
+  </g>
+  <g color="var(--accent)">
+    <!-- อสต. <-> MPHO -->
+    <line class="edge lead" x1="470" y1="408" x2="470" y2="246" marker-start="url(#ah)" marker-end="url(#ah)"/>
+    <text class="el lead" x="478" y="318">นิเทศ ↓</text>
+    <text class="el lead" x="478" y="336">รายงาน ↑</text>
+    <!-- FHL supervision via MPHO (dashed) -->
+    <!-- MPHO -> สสอ./JICC -->
+    <line class="edge lead" x1="552" y1="208" x2="1030" y2="208" marker-end="url(#ah)"/>
+    <text class="el lead" x="600" y="200">รายงานเฝ้าระวัง · สอบสวนโรค (CDCU) → สสอ./JICC</text>
+  </g>
+
+  <!-- cross-cutting strip -->
+  <rect x="170" y="664" width="1060" height="126" rx="10" fill="none" stroke="currentColor" stroke-opacity=".25"/>
+  <text class="th" x="186" y="688">หลักสูตร/รายวิชาข้ามระดับ</text>
+  <text class="ts" x="400" y="688">ผู้เรียนหลายกลุ่มเรียนร่วม จึงไม่อยู่ในช่องใดช่องหนึ่ง</text>
+  <g class="pill"><rect x="186" y="700" width="404" height="30" rx="15"/><text x="200" y="720">TBHLC 13 Field Dentistry · 35 ชม. → แพทย์ · Medic · พยาบาล · อสต.</text></g>
+  <g class="pill"><rect x="600" y="700" width="196" height="30" rx="15"/><text x="614" y="720">CP2 ER Basic 18 / Adv 60</text></g>
+  <g class="pill"><rect x="806" y="700" width="128" height="30" rx="15"/><text x="820" y="720">CP6 IC 35</text></g>
+  <g class="pill"><rect x="944" y="700" width="128" height="30" rx="15"/><text x="958" y="720">CP8 BHS 66</text></g>
+  <g class="pill"><rect x="186" y="742" width="128" height="30" rx="15"/><text x="200" y="762">CP11 CDCU 27</text></g>
+  <g class="pill"><rect x="324" y="742" width="128" height="30" rx="15"/><text x="338" y="762">CP5 Psy 7</text></g>
+  <g class="pill post"><rect x="462" y="742" width="500" height="30" rx="15"/><text x="476" y="762">เลื่อนไปโครงการถัดไป: CP1 Patient Safety · CP4 US · CP7 Palliative · CP10 NCDs</text></g>
+</svg>
+    </div>
+    <div class="legend">
+      <span><i class="sw" style="background:var(--clin-soft);border-color:var(--clin);border-style:dashed"></i>วุฒิวิชาชีพเดิม</span>
+      <span><i class="sw" style="background:var(--accent-soft);border-color:var(--accent)"></i>สายผู้นำสาธารณสุขชุมชน (หลักสูตร ≈ 1 ปี)</span>
+      <span><i class="sw" style="background:var(--clin-soft);border-color:var(--clin)"></i>สายคลินิก</span>
+      <span><i class="sw" style="border-color:var(--warn)"></i>ชั่วโมง/สัดส่วนปฏิบัติอาจไม่สมกับความเสี่ยงของงาน</span>
+      <span><i class="sw" style="background:var(--thai)"></i>ระบบสาธารณสุขไทย (นอกแคมป์)</span>
+    </div>
+    <figcaption>แกนตั้งจัดตามจำนวนชั่วโมงเรียน ยกเว้นแพทย์ซึ่งอยู่บนสุดเพราะมีวุฒิวิชาชีพเดิม (หลักสูตร 35 ชม. เป็นหลักสูตรเชื่อมต่อ) แกนนอนคือระดับของระบบบริการ เส้นสีเขียวน้ำทะเลคือสายผู้นำสาธารณสุขชุมชนที่เชื่อมจากครัวเรือนถึง สสอ./JICC · * คิดที่ 30 ชม./สัปดาห์ (6 ชม. × 5 วัน) เป็นการประมาณของผู้วิพากษ์ · † ผ่าน รพ.สต.บ้านร่มเกล้า 4 · บทบาทและเส้นเชื่อมมาจากนิยามสมรรถนะในเอกสารบทนำและสไลด์ข้อมูลประชากรในแคมป์ ส่วนการจัดวางตำแหน่งเป็นการวิเคราะห์</figcaption>
+  </figure>
+</section>
+
+<section>
+  <h2>ลำดับชั้นตามความลึกของการฝึก</h2>
+  <p style="margin-bottom:14px">ชั่วโมงเรียนเป็นตัวกำหนดลำดับชั้นได้ดีเมื่อหลักสูตรนั้น <em>สร้างบุคลากรกลุ่มใหม่</em> (MPHO, Medic, PN) แต่ไม่ใช่สำหรับหลักสูตรที่ <em>เสริมทักษะผู้มีวุฒิเดิม</em> (แพทย์ และน่าจะรวม Midwife, Lab, ผู้ช่วยห้องยา) ลำดับชั้นจริงจึงควรดูสามอย่างร่วมกัน: วุฒิเดิม × ชั่วโมงฝึก × ขอบเขตการตัดสินใจที่ได้รับมอบ <span class="tag ana">วิเคราะห์</span></p>
+  <div class="tablewrap">
+  <table>
+    <thead><tr><th>ระดับ</th><th>หลักสูตร</th><th>ชั่วโมง (ปฏิบัติ)</th><th>บทบาทในระบบ</th><th>ศักยภาพสนับสนุน/นำการพัฒนาระบบ</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><span class="tier">A</span></td>
+        <td>TBHLC 1 แพทย์ข้ามชาติ</td>
+        <td class="num">35 (60%)</td>
+        <td><span class="tag doc">เอกสาร</span> ตรวจรักษา คัดกรองส่งต่อ ควบคุมโรค บริหารคลังยา ประสาน สธ./UNHCR/NGO และกำกับ Medic</td>
+        <td>ผู้นำทางคลินิกและผู้ถ่ายโอนงาน (เอกสารระบุบทบาท Capacity Building) <span class="tag gap">ข้อมูลที่ขาด</span> มีเพียง 4 คนที่แม่หละ ใครทำบทบาทนี้ในอีก 2 แคมป์</td>
+      </tr>
+      <tr class="lead">
+        <td><span class="tier">B</span></td>
+        <td>TBHLC 4 Migrant Public Health Officer</td>
+        <td class="num">1,245 (70%)<br>38 หน่วยกิต</td>
+        <td><span class="tag doc">เอกสาร</span> สาธารณสุขมูลฐาน อนามัยสิ่งแวดล้อม ระบาดวิทยา อนามัยครอบครัว วัคซีน ฟื้นฟู ฝึกภาคสนาม 4 ช่วง × 180 ชม. กลุ่มเป้าหมาย: Medic, Migrant Nurse, CHW, Environmental Health Worker, อสต.</td>
+        <td><span class="tag ana">วิเคราะห์</span> หลักสูตรเดียวที่ปรัชญาระบุให้ "เป็นผู้นำการพัฒนาสุขภาพของประชาชนและการสาธารณสุขในชุมชน" เหมาะเป็นแกนนิเทศ อสต./แกนนำครอบครัว ผู้รายงานข้อมูลเข้า สสอ./JICC และผู้สอนรุ่นต่อไป (ครู ก) กลุ่มเป้าหมายที่รับจากหลายระดับทำให้เป็นบันไดอาชีพได้</td>
+      </tr>
+      <tr>
+        <td><span class="tier">C</span></td>
+        <td>TBHLC 2 Medic (ชื่อหลักสูตร "Migrant Health Nurse")<br>TBHLC 3 ผู้ช่วยพยาบาล</td>
+        <td class="num">615 (51%)<br>575 (39%)</td>
+        <td><span class="tag doc">เอกสาร</span> Medic: ตรวจรักษาเบื้องต้น หัตถการ ผ่าตัดเล็ก SOAP CQI/PDSA Do-Consult-Refer · PN: ดูแลผู้ป่วยในตามแผนรักษา ฝึกที่ รพ.แม่สอด/ท่าสองยาง นิเทศ 1:8</td>
+        <td><span class="tag ana">วิเคราะห์</span> กำลังหลักของบริการคลินิก ใน 2 แคมป์ที่ไม่มีแพทย์ Medic คือผู้ตัดสินใจทางคลินิกสูงสุด แต่หลักสูตรออกแบบให้ทำงาน "ภายใต้การกำกับของแพทย์" Medic อาวุโสจึงควรมีเส้นทางสู่บทบาท clinical lead/preceptor</td>
+      </tr>
+      <tr>
+        <td><span class="tier">D</span></td>
+        <td>TBHLC 7 นวดไทย · 8 อสต. · 9 Care Giver · 10 Midwife · 11 ผู้ช่วยห้องยา</td>
+        <td class="num">60 (75%) · 46 (50%) · 70 (57%) · 60 (50%) · 50 (12%)</td>
+        <td><span class="tag ana">วิเคราะห์</span> แบ่งเป็นสองกลุ่ม: กลุ่มชุมชน (อสต., Care Giver) เป็นด่านหน้า และกลุ่มงานเฉพาะในหน่วยบริการ (Midwife, ห้องยา, นวดไทย)</td>
+        <td>อสต. และ Care Giver เป็นฐานที่ MPHO ต่อยอดได้ <span class="tag gap">ข้อมูลที่ขาด</span> Midwife 60 ชม. ทำคลอดในแคมป์ที่ไม่มีแพทย์ และห้องยาฝึกปฏิบัติ 6 ชม. ต้องระบุว่ารับเฉพาะผู้มีพื้นฐานเดิมหรือไม่</td>
+      </tr>
+      <tr>
+        <td><span class="tier">E</span></td>
+        <td>TBHLC 5 Lab · 6 เวชระเบียน · 12 แกนนำครอบครัว · 13 Field Dentistry</td>
+        <td class="num">18 (17%) · 24 (50%) · 24 (42%) · 35 (ตามกลุ่ม)</td>
+        <td><span class="tag ana">วิเคราะห์</span> งานสนับสนุนเฉพาะจุดในหน่วยบริการ (Lab, เวชระเบียน) และระดับครัวเรือน (แกนนำครอบครัว) Field Dentistry เป็นหลักสูตรเสริมให้ผู้เรียนหลายระดับ</td>
+        <td>เวชระเบียนเป็นจุดเชื่อมข้อมูลกับระบบไทย (Hospital OS) แกนนำครอบครัวขยายการเข้าถึงลงถึงบ้าน แต่ <span class="tag gap">ข้อมูลที่ขาด</span> ยังไม่มีเกณฑ์ผ่าน</td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+</section>
+
+<section>
+  <h2>ชั่วโมงเรียนและสัดส่วนภาคปฏิบัติ</h2>
+  <figure>
+    <div class="legend">
+      <span><i class="sw" style="background:var(--series-2);border:0"></i>ทฤษฎี</span>
+      <span><i class="sw" style="background:var(--series-1);border:0"></i>ปฏิบัติ</span>
+      <span><i class="sw" style="background:repeating-linear-gradient(45deg,var(--line) 0 4px,transparent 4px 8px)"></i>ไม่ได้แยกทฤษฎี/ปฏิบัติ</span>
+    </div>
+    <div class="bars" id="bars" role="table" aria-label="ชั่วโมงเรียนทฤษฎีและปฏิบัติของ 13 หลักสูตร"></div>
+    <figcaption>สเกลเส้นตรงเดียวกันทุกแถว (เต็มแถว = 1,245 ชม.) เพื่อให้เห็นช่องว่างระหว่างหลักสูตรยาวกับหลักสูตรสั้น สัดส่วนปฏิบัติต่ำกว่า 20% แสดงด้วยสีเตือน ที่มา: ตารางสรุปโครงสร้างหลักสูตรในเอกสารบทนำ (หน้าแรก)</figcaption>
+  </figure>
+</section>
+
+<section>
+  <h2>สิ่งที่แผนที่บอก</h2>
+  <div class="cols">
+    <div class="card a">
+      <h3>1. MPHO คือท่อผู้นำของระบบปฐมภูมิในแคมป์</h3>
+      <p>หลักสูตรนี้ใช้ชั่วโมงเกือบครึ่งหนึ่งของทั้งโครงการ (43.6%) และเป็นเส้นเดียวบนแผนที่ที่ลากจากครัวเรือนถึง สสอ./JICC การลงทุนระดับนี้จะคุ้มค่าเมื่อผู้จบมีตำแหน่ง มีขอบเขตงาน และมีค่าตอบแทนรองรับหลังทุน HDPM-Tak สิ้นสุด (17 ก.พ. 2571) <span class="tag gap">ข้อมูลที่ขาด</span></p>
+    </div>
+    <div class="card w">
+      <h3>2. สายคลินิกไม่มีหลักสูตรผู้นำ</h3>
+      <p>ยอดสายคลินิกคือแพทย์ 4 คนที่แม่หละ อุ้มเปี้ยมและนุโพใช้ Medic consult 24 ชม. ระบบ Do-Consult-Refer ในสองแคมป์นี้จึงต้องมีปลายทาง consult ที่ รพ.แม่ข่ายชัดเจน (standing orders, tele-consult) และควรมีเส้นทางพัฒนา Medic อาวุโสเป็นผู้นิเทศ</p>
+    </div>
+    <div class="card w">
+      <h3>3. ชั่วโมงบางหลักสูตรไม่สมกับความเสี่ยงของงาน</h3>
+      <p>Midwife 60 ชม. รับผิดชอบการคลอดทุกแคมป์ (ส่งต่อเฉพาะ high risk) ผู้ช่วยห้องยาฝึกปฏิบัติ 6 ชม. ขณะที่ปัญหาตั้งต้นคือ medication error สูง และ Lab ฝึกปฏิบัติ 3 ชม. ถ้าเป็นหลักสูตรเสริมทักษะผู้มีพื้นฐานเดิม ควรเขียนคุณสมบัติผู้เข้าเรียนและเกณฑ์ผ่านเชิงสมรรถนะให้ชัด</p>
+    </div>
+    <div class="card w">
+      <h3>4. ฝั่งระบบไทยว่างจากหลักสูตร</h3>
+      <p>คอลัมน์ขวาสุดไม่มีหลักสูตรใดรองรับ แต่ Supervised Deployment ต้องการผู้นิเทศและครูพี่เลี้ยงจาก รพ.แม่ข่าย 3 แห่ง และ PN ต้องฝึกบนหอผู้ป่วยในอัตรา 1:8 ควรมีโมดูลสั้นสำหรับผู้นิเทศฝั่งไทย</p>
+    </div>
+    <div class="card">
+      <h3>5. ช่องที่ยังไม่มีผู้รับผิดชอบเฉพาะ</h3>
+      <p>เอกสารบทนำนิยาม Environmental Health ไว้ แต่ไม่มีหลักสูตรเฉพาะ (กระจายอยู่ใน MPHO และ อสต.) สุขภาพจิตมีเพียง CP5 7 ชม. และเนื้อหา PTSD ใน Care Giver ทั้งที่ภาระ PTSD และความแออัด/WASH เป็นความเสี่ยงหลักของพื้นที่</p>
+    </div>
+    <div class="card">
+      <h3>6. ชื่อหลักสูตรกับบทบาทจริงไม่ตรงกัน</h3>
+      <p>TBHLC 2 ชื่อ "Migrant Health Nurse" แต่เนื้อหาเป็นของ Medic หัวเอกสาร TBHLC 4 ระบุ 46 ชม. แต่ตารางรายวิชารวม 1,245 ชม. และชื่อประกาศนียบัตรคือ "ผู้ช่วยเจ้าหน้าที่สาธารณสุขชายแดน" ชื่อเหล่านี้จะกำหนดว่าผู้จบถูกวางไว้ระดับใด จึงควรแก้ให้ตรงกันก่อนรับรอง</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>ข้อเสนอเรียงตามลำดับความสำคัญ</h2>
+  <div class="prio">
+    <div class="card">
+      <h3><span class="lvl must">ต้องแก้ก่อนรับรอง</span></h3>
+      <ol>
+        <li><strong>ตารางขอบเขตการปฏิบัติรายระดับ</strong> ทำแผนที่นี้เป็นตาราง Do / Consult / Refer ของทั้ง 13 กลุ่ม ระบุผู้กำกับของแต่ละกลุ่ม และกรณีแคมป์ที่ไม่มีแพทย์ <span class="who">ผู้ดำเนินการ: ศรร. ร่วม รพ.ท่าสองยาง รพ.พบพระ รพ.อุ้มผาง และ สสจ.ตาก</span></li>
+        <li><strong>คุณสมบัติผู้เข้าเรียนและเกณฑ์ผ่านเชิงสมรรถนะ</strong> สำหรับ Midwife, ผู้ช่วยห้องยา และ Lab เช่น logbook จำนวนการคลอดภายใต้การกำกับ หรือ OSCE การจ่ายยา <span class="who">ผู้ดำเนินการ: ผู้รับผิดชอบหลักสูตร TBHLC 5, 10, 11</span></li>
+        <li><strong>แก้ตัวเลขและชื่อให้ตรงกัน</strong> ชั่วโมง TBHLC 4 (46 หรือ 1,245) ชื่อประกาศนียบัตร และชื่อ TBHLC 2 <span class="who">ผู้ดำเนินการ: ทีมพัฒนาหลักสูตร TBHLC 2, 4</span></li>
+      </ol>
+    </div>
+    <div class="card">
+      <h3><span class="lvl should">ควรปรับปรุง</span></h3>
+      <ol start="4">
+        <li><strong>บันไดอาชีพและการเทียบโอนชั่วโมง</strong> แกนนำครอบครัว → อสต. → MPHO และ PN → Medic → clinical lead เพื่อให้หลักสูตรสั้นเป็นทางเข้าสู่หลักสูตรยาว <span class="who">ผู้ดำเนินการ: ศรร. ร่วมสถาบันการศึกษาคู่ MOU</span></li>
+        <li><strong>โมดูลผู้นิเทศและครูพี่เลี้ยง (train-the-trainer)</strong> สำหรับบุคลากร รพ.แม่ข่าย Medic อาวุโส และผู้จบ MPHO รุ่นแรก <span class="who">ผู้ดำเนินการ: ศรร. · ด้านการประเมินสมรรถนะ รามาธิบดีอาจร่วมสนับสนุนได้ หากคณะยืนยัน</span></li>
+        <li><strong>ระบุผู้รับผิดชอบงานสุขภาพจิตและอนามัยสิ่งแวดล้อม</strong> ในระดับชุมชน อาจเป็นแขนงเลือกภายใน MPHO <span class="who">ผู้ดำเนินการ: ทีม TBHLC 4 ร่วม สสจ.ตาก</span></li>
+      </ol>
+    </div>
+    <div class="card">
+      <h3><span class="lvl long">ระยะยาว</span></h3>
+      <ol start="7">
+        <li><strong>ตำแหน่งงานและค่าตอบแทนรองรับผู้จบหลักสูตรยาว</strong> โดยเฉพาะ MPHO หลังทุน HDPM-Tak สิ้นสุด อาจอ้างอิงรูปแบบค่าตอบแทนและประกันสุขภาพของ TAK CARE <span class="who">ผู้ดำเนินการ: สสจ.ตาก ร่วม WHO, UNHCR และภาคี NGO</span></li>
+        <li><strong>วางจำนวนรุ่นจากข้อมูลกำลังคนจริง</strong> แยก "จนท.ด้านการแพทย์อื่น ๆ" 285 คนตามประเภท แล้วกำหนดสัดส่วนผู้เรียนรายระดับต่อประชากรแต่ละแคมป์ <span class="who">ผู้ดำเนินการ: ศรร. ร่วม IRC และ รพ.แม่ข่าย</span></li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>คำถามสำหรับที่ประชุม</h2>
+  <div class="card">
+    <ol>
+      <li>ผู้จบ MPHO 1,245 ชม. จะได้ตำแหน่งอะไรในแคมป์ ใครจ้าง ใครกำกับ และสัมพันธ์กับ Medic และ อสต. อย่างไร</li>
+      <li>ในอุ้มเปี้ยมและนุโพ ใครเป็นผู้กำกับทางคลินิกของ Medic และ Midwife ตามสายบังคับบัญชาที่เป็นทางการ</li>
+      <li>Midwife 60 ชม. ผู้ช่วยห้องยา 50 ชม. และ Lab 18 ชม. รับผู้เรียนที่มีพื้นฐานอะไร และมีการรับรองสมรรถนะก่อนปฏิบัติงานจริงหรือไม่</li>
+      <li>ผู้ผ่านหลักสูตรสั้นเทียบโอนชั่วโมงเข้าสู่หลักสูตรยาวได้หรือไม่</li>
+      <li>ใน 285 คนที่เป็น "จนท.ด้านการแพทย์อื่น ๆ" มี Medic, Midwife, Lab, ห้องยา และ อสต. อย่างละกี่คน</li>
+    </ol>
+  </div>
+</section>
+
+<section class="note">
+  <p><strong>ขอบเขตข้อมูล:</strong> ใน Project มีเอกสารฉบับเต็มเฉพาะ TBHLC 4, 9, 12 (และ CP8, CDCU) หลักสูตรอื่นใช้ข้อมูลจากตารางสรุปในเอกสารบทนำเท่านั้น จึงยังไม่ได้ตรวจ ELO และเกณฑ์ผ่านรายหลักสูตร ข้อสังเกตเรื่องชื่อตำแหน่งกับกฎหมายวิชาชีพเป็นความรู้ทั่วไปที่ควรตรวจกับสภาวิชาชีพ</p>
+  <p><strong>แหล่งข้อมูล:</strong> บทนำ หน้าแรก.pdf (นิยามสมรรถนะ ตารางโครงสร้าง 13 หลักสูตร และ Stakeholder Needs Matrix) · หลักสูตร Migrant Public Health Officer.pdf · หลักสูตร Migrant Care Giver.pdf · หลักสูตร Family health Leader.pdf · TBHLC_ข้อมูลประชากรในแคมป์_2569-11.md · TBHLC_นำเสนอศูนย์เรียนรู้_2569-11-06.md</p>
+  <p>จัดทำ 12 พ.ย. 2569 เป็นร่างของผู้วิพากษ์ ไม่ใช่ความเห็นอย่างเป็นทางการของคณะแพทยศาสตร์โรงพยาบาลรามาธิบดี</p>
+</section>
+
+</main>
+<script>
+(function () {
+  var MAX = 1245;
+  var data = [
+    ["TBHLC 4 MPHO", 1245, 375, 870],
+    ["TBHLC 2 Medic", 615, 300, 315],
+    ["TBHLC 3 ผู้ช่วยพยาบาล", 575, 350, 225],
+    ["TBHLC 9 Care Giver", 70, 30, 40],
+    ["TBHLC 7 นวดไทย", 60, 15, 45],
+    ["TBHLC 10 Midwife", 60, 30, 30],
+    ["TBHLC 11 ผู้ช่วยห้องยา", 50, 44, 6],
+    ["TBHLC 8 อสต.", 46, 23, 23],
+    ["TBHLC 1 แพทย์ (วุฒิเดิม)", 35, 14, 21],
+    ["TBHLC 13 Field Dentistry", 35, null, null],
+    ["TBHLC 6 เวชระเบียน", 24, 12, 12],
+    ["TBHLC 12 แกนนำครอบครัว", 24, 14, 10],
+    ["TBHLC 5 Lab", 18, 15, 3]
+  ];
+  var host = document.getElementById("bars");
+  data.forEach(function (d) {
+    var row = document.createElement("div");
+    row.className = "row"; row.setAttribute("role", "row"); row.tabIndex = 0;
+    var tip = d[2] === null ? d[0] + ": " + d[1] + " ชม. (ไม่ได้แยกทฤษฎี/ปฏิบัติ)"
+      : d[0] + ": " + d[1] + " ชม. · ทฤษฎี " + d[2] + " · ปฏิบัติ " + d[3];
+    row.title = tip;
+    var lbl = document.createElement("div"); lbl.className = "lbl"; lbl.textContent = d[0]; lbl.setAttribute("role", "cell");
+    var tr = document.createElement("div"); tr.className = "track"; tr.setAttribute("role", "cell");
+    tr.style.width = Math.max(d[1] / MAX * 100, 1.2) + "%";
+    if (d[2] === null) {
+      var u = document.createElement("div"); u.className = "seg u"; u.style.flex = "1"; tr.appendChild(u);
+    } else {
+      var t = document.createElement("div"); t.className = "seg t"; t.style.flex = String(d[2]);
+      var p = document.createElement("div"); p.className = "seg p"; p.style.flex = String(d[3]);
+      tr.appendChild(t); tr.appendChild(p);
+    }
+    var val = document.createElement("div"); val.className = "val"; val.setAttribute("role", "cell");
+    if (d[2] === null) { val.innerHTML = "<b>" + d[1] + "</b> ชม. · ตามกลุ่มผู้เรียน"; }
+    else {
+      var pct = Math.round(d[3] / d[1] * 100);
+      val.innerHTML = "<b>" + d[1].toLocaleString("en-US") + "</b> ชม. · ปฏิบัติ " + (pct < 20 ? '<span class="low">' + pct + "%</span>" : pct + "%");
+    }
+    var wrap = document.createElement("div"); wrap.appendChild(tr);
+    row.appendChild(lbl); row.appendChild(wrap); row.appendChild(val);
+    host.appendChild(row);
+  });
+})();
+</script>
+</body>
+</html>
